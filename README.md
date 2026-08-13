@@ -137,6 +137,11 @@ python src/phase3_train_selfie.py
 python src/phase4_eval_scorer.py
 ```
 
+## 📚 Complete Kaggle Notebook
+
+https://www.kaggle.com/code/narendrabayutama/aiaf-full-poc
+
+
 ## 📚 References & Citation
 
 This project builds upon the foundational research presented in the following papers:
