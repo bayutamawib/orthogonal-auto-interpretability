@@ -139,7 +139,7 @@ python src/phase4_eval_scorer.py
 
 ## 📚 Complete Kaggle Notebook
 
-https://www.kaggle.com/code/narendrabayutama/aiaf-full-poc
+https://www.kaggle.com/code/narendrabayutama/poc-pipeline
 
 
 ## 📚 References & Citation
