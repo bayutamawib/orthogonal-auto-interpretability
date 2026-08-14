@@ -1,7 +1,7 @@
 
 # 🧠 Mind-Reading LLMs: Disentangling Empathy and Clinical Reasoning via Orthogonal Auto-Interpretability
 
-> **Abstract:** This project presents an end-to-end Auto-Interpretability pipeline that addresses the "alignment tax" in Large Language Models (LLMs)—where training for empathy degrades objective clinical reasoning. By combining **Group-SAE**, **Subspace Orthogonalization**, and **Trained Self-Interpretation (SelfIE)**, this architecture not only extracts latent features but mathematically disentangles them, enabling the LLM to translate its own internal representations into natural language *without ever reading the source text*.
+> **Abstract:** This project presents an end-to-end Auto-Interpretability pipeline that addresses the "alignment tax" in Large Language Models (LLMs)—where training for empathy degrades objective clinical reasoning. By combining **Group-SAE**, **Subspace Orthogonalization**, and **Scalar Affine Variant of Trained Self-Interpretation (SelfIE)**, this architecture not only extracts latent features but mathematically disentangles them, enabling the LLM to translate its own internal representations into natural language *without ever reading the source text*.
 
 ---
 
@@ -11,7 +11,7 @@
 * **Evaluation Model (Scorer):**
 * This Proof of Concept is using `Llama-3.1-8b-instant` (via Groq).
 * Further, we will be using `LLaMA 3.3 70B` (via Groq) for a scaled project.
-* **Techniques:** LoRA, Group-SAE, SelfIE Adapter, Orthogonal Latent Projection
+* **Techniques:** LoRA, Group-SAE, Scalar Affine SelfIE Adapter, Orthogonal Latent Projection
 
 ---
 
@@ -26,13 +26,13 @@
 ├── models/
 │   ├── lora_adapter/                    # Bobot hasil Phase 1
 │   ├── group_sae/                       # Bobot SAE hasil Phase 2
-│   └── selfie_adapter/                  # Bobot SelfIE hasil Phase 3
+│   └── selfie_adapter/                  # Bobot Scalar Affine SelfIE hasil Phase 3
 │
 ├── src/
 │   ├── phase1_train_lora.py             # Script LoRA Fine-Tuning Pythia-160M
 │   ├── phase2_train_sae.py              # Script Group-SAE & Orthogonalization
 │   ├── phase2.2_ortho_ablation.py		 # Script Orthogonalization Ablation
-│   ├── phase3_train_selfie.py           # Script pelatihan Trained SelfIE
+│   ├── phase3_train_selfie.py           # Script pelatihan Trained Scalar Affine SelfIE
 │   ├── phase4_eval_scorer.py            # Script Detection & Fuzzing Scores
 │   └── phase4.2_control_experiment.py	 # Script Eval Control Experiment / Ablation
 │
@@ -80,9 +80,9 @@ To definitively prove that our Orthogonal Penalty works computationally, we cond
 
 Raw LLM embeddings are notoriously anisotropic (clustered tightly). By reducing the similarity to 0.7293 (an effective angular separation of ~43 degrees), we achieved a ~27% relative decorrelation. This represents an optimal equilibrium: we successfully forced the manifolds apart without destroying the model’s foundational linguistic semantics (which would have spiked the FVU).
 
-### 🔹 Phase 4: SelfIE Adapter & Zero-Shot Vector Translation
+### 🔹 Phase 4: Scalar Affine SelfIE Adapter & Zero-Shot Vector Translation
 
-Using the Trained Self-Interpretation methodology (*Pepper et al., 2026*), we injected the untangled feature vector ($h$) back into Pythia's embedding space via a lightweight **SelfIE Adapter** (a scalar-affine transformation: $f_{adapter}(h) = (s \cdot h) + b$). This acts as a mathematical bridge, enabling Pythia to zero-shot generate a natural language description of the active concept—**without the model ever seeing the original input text.**
+Using the Trained Self-Interpretation methodology (*Pepper et al., 2026*), we injected the untangled feature vector ($h$) back into Pythia's embedding space via a lightweight **Scalar Affine SelfIE Adapter** (a scalar-affine transformation: $f_{adapter}(h) = (s \cdot h) + b$). This acts as a mathematical bridge, enabling Pythia to zero-shot generate a natural language description of the active concept—**without the model ever seeing the original input text.**
 
 ### 🔹 Phase 5: Automated Evaluation (Explainer & Scorer)
 
@@ -105,11 +105,11 @@ Our initial PoC yielded highly promising quantitative metrics:
 
 In our baseline control experiments, we exposed the LLaMA Judge to the raw, un-finetuned outputs of the Base Pythia-160M model. Strikingly, LLaMA still maintained a **100% classification accuracy**. This highlights a critical vulnerability in current Auto-Interpretability frameworks: **Evaluation Saturation**. The 70B-parameter Judge possesses such robust zero-shot reasoning capabilities that it correctly bypassed the Explainer’s noisy guidance, relying purely on its own semantic understanding of the texts. LLaMA effectively "rescued" Pythia’s flawed narrative using valid statistical intuition (*Deductive Rescue*).
 
-### 💡 Qualitative Efficacy of the SelfIE Adapter
+### 💡 Qualitative Efficacy of the Scalar Affine SelfIE Adapter
 
 While the quantitative accuracy saturated due to the Judge’s capability, the qualitative data provides undeniable proof of the pipeline’s success. The table below juxtaposes the raw hallucinated state of the un-finetuned model against the structured semantic extraction achieved post-orthogonalization:
 
-| Target Concept            | Base Pythia (Un-finetuned) Output            | SelfIE Adapter (Orthogonal) Output                                             | Transformation Result                          |
+| Target Concept            | Base Pythia (Un-finetuned) Output            | Scalar Affine SelfIE Adapter (Orthogonal) Output                                             | Transformation Result                          |
 | ------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------- |
 | **Catastrophizing** | *"a large scale 'nanny' and describes..."* | *"Concept representation for clinical or demographic information, 77"*       | Noise$\rightarrow$ Semantic Signal           |
 | **Mania**           | *"a new kind of autism..."*                | *"Concept representation in clinical examination" (Gulliver, [@CR31"*        | Hallucination$\rightarrow$ Clinical Accuracy |
