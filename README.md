@@ -3,6 +3,7 @@
 
 > **Abstract:** This project presents an end-to-end Auto-Interpretability pipeline that addresses the "alignment tax" in Large Language Models (LLMs)—where training for empathy degrades objective clinical reasoning. By combining **Group-SAE**, **Subspace Orthogonalization**, and **Scalar Affine Adapter**, this architecture not only extracts latent features but mathematically disentangles them, enabling the LLM to translate its own internal representations into natural language *without ever reading the source text*.
 
+Complete Notebook is documented in: https://www.kaggle.com/code/narendrabayutama/poc-pipeline
 ---
 
 ## 🚀 Core Technologies
