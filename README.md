@@ -11,7 +11,6 @@
 * **Evaluation Model (Scorer):**
 
   * This Proof of Concept is using `Llama-3.1-8b-instant` (via Groq).
-  * Further, we will be using `LLaMA 3.3 70B` (via Groq) for a scaled project.
 * **Techniques:** LoRA, Group-SAE, Scalar Affine Adapter, Orthogonal Latent Projection
 
 ---
@@ -32,10 +31,10 @@
 ├── src/
 │   ├── phase1_train_lora.py             # Script LoRA Fine-Tuning Pythia-160M
 │   ├── phase2_train_sae.py              # Script Group-SAE & Orthogonalization
-│   ├── phase2.2_ortho_ablation.py		 # Script Orthogonalization Ablation
+│   ├── phase2.2_ortho_ablation.py		     # Script Orthogonalization Ablation
 │   ├── phase3_train_selfie.py           # Script pelatihan Trained Scalar Affine
 │   ├── phase4_eval_scorer.py            # Script Detection & Fuzzing Scores
-│   └── phase4.2_control_experiment.py	 # Script Eval Control Experiment / Ablation
+│   └── phase4.2_control_experiment.py	  # Script Eval Control Experiment / Ablation
 │
 ├── notebooks/
 │   └── poc_pipeline.ipynb               # Kaggle Notebook untuk Proof of Concept
@@ -87,7 +86,7 @@ Using the Trained Self-Interpretation methodology (*Pepper et al., 2026*), we in
 
 ### 🔹 Phase 5: Automated Evaluation (Explainer & Scorer)
 
-We employ **LLaMA 3.3 70B** as an independent, blind Judge (Scorer) to validate the pipeline:
+We employ **LLaMA-3.1–8B** as an independent, blind Judge (Scorer) to validate the pipeline:
 
 1. **Detection:** LLaMA reads Pythia's generated description and must distinguish between a *True Text* and a *Decoy Text*.
 2. **Fuzzing:** LLaMA reads Pythia's description and extracts the single most triggering token/word from the True Text.
@@ -104,7 +103,7 @@ Our initial PoC yielded highly promising quantitative metrics:
 
 ### 💡 Technical Insight: Evaluation Saturation & "Deductive Rescue"
 
-In our baseline control experiments, we exposed the LLaMA Judge to the raw, un-finetuned outputs of the Base Pythia-160M model. Strikingly, LLaMA still maintained a **100% classification accuracy**. This highlights a critical vulnerability in current Auto-Interpretability frameworks: **Evaluation Saturation**. The 70B-parameter Judge possesses such robust zero-shot reasoning capabilities that it correctly bypassed the Explainer’s noisy guidance, relying purely on its own semantic understanding of the texts. LLaMA effectively "rescued" Pythia’s flawed narrative using valid statistical intuition (*Deductive Rescue*).
+In our baseline control experiments, we exposed the LLaMA Judge to the raw, un-finetuned outputs of the Base Pythia-160M model. Strikingly, LLaMA still maintained a **100% classification accuracy**. This highlights a critical vulnerability in current Auto-Interpretability frameworks: **Evaluation Saturation**. The 8B-parameter Judge possesses such robust zero-shot reasoning capabilities that it correctly bypassed the Explainer’s noisy guidance, relying purely on its own semantic understanding of the texts. LLaMA effectively "rescued" Pythia’s flawed narrative using valid statistical intuition (*Deductive Rescue*).
 
 ### 💡 Qualitative Efficacy of the Scalar Affine Adapter
 
@@ -160,7 +159,7 @@ python src/phase4_eval_scorer.py
 ## 📚 References & Citation
 
 This project builds upon the foundational research presented in the following papers:
-
+* **Chen, H., Vondrick, C., & Mao, C. (2024).** Selfie: Self-interpretation of large language model embeddings. arXiv preprint arXiv:2403.10949.
 * **Ghilardi, D., Belotti, F., Molinari, M., Ma, T., & Palmonari, M. (2025).** Group-SAE: Efficient Training of Sparse Autoencoders for Large Language Models via Layer Groups. *EMNLP 2025*.
 * **Ibrahim, L., Hafner, F. S., & Rocher, L. (2025).** Training language models to be warm and empathetic makes them less reliable and more sycophantic. *arXiv preprint*.
 * **Pepper, K., et al. (2026).** Learning Self-Interpretation from Interpretability Artifacts: Training Lightweight Adapters on Vector-Label Pairs. *arXiv preprint arXiv:2602.10352*.
