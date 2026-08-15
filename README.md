@@ -76,7 +76,7 @@ Inspired by the discovery that empathy can induce sycophancy (*Ibrahim et al., 2
 To definitively prove that our Orthogonal Penalty works computationally, we conducted an Ablation Test on the extracted hidden states:
 
 * **Before Orthogonalization (Raw Pythia):** Cosine Similarity = **0.9964**
-* **After Orthogonalization (Group-SAE):** Cosine Similarity = **0.7293**
+* **After Orthogonalization (Group-SAE-Orthogonalized):** Cosine Similarity = **0.7293**
 
 Raw LLM embeddings are notoriously anisotropic (clustered tightly). By reducing the similarity to 0.7293 (an effective angular separation of ~43 degrees), we achieved a ~27% relative decorrelation. This represents an optimal equilibrium: we successfully forced the manifolds apart without destroying the model’s foundational linguistic semantics (which would have spiked the FVU).
 
